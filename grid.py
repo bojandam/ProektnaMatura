@@ -4,6 +4,7 @@ class Grid:
         self.grid = [ [' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' '] ]
         self.turn = 'X'
         self.result = None
+        self.Values = [1, -1, 0] # For X: 1 if X, -1 if 0, 0 if Null, swaped for 0
 
 
     def change_turn(self):
@@ -45,6 +46,19 @@ class Grid:
 
     def done(self):
         return self.result is not None
+
+    def GridToRow(self):
+        arr = []
+        for row in self.grid:
+            arr.extend(row)
+        return arr
+
+    def getX(self):
+        arr = self.GridToRow()
+        return [self.Values[0] if X =='X' else (self.Values[1] if X =='0' else self.Values[2]) for X in arr]
+    def getY(self):
+        arr = self.GridToRow()
+        return [self.Values[1] if X =='X' else (self.Values[0] if X =='0' else self.Values[2]) for X in arr]
 
     def __str__(self):
         return (f" {self.grid[0][0]} | {self.grid[0][1]} | {self.grid[0][2]} \n"
