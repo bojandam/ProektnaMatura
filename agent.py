@@ -60,12 +60,4 @@ class Agent:
 if __name__ == "__main__":
     Test = Agent()
     print()
-    print([round(el, 2) for el in Test.predict([0, 0, 0, 0, 0, 0, 0, 0, 0])])
-    Other = Agent()
-    print([round(el, 2) for el in Agent().predict([0, 0, 0, 0, 0, 0, 0, 0, 0])])
-    print([round(el, 2) for el in Agent().predict([0, 0, 0, 0, 0, 0, 0, 0, 0])])
-    print([round(el, 2) for el in Agent().predict([0, 0, 0, 0, 0, 0, 0, 0, 0])])
-    print([round(el, 2) for el in Agent().predict([0, 0, 0, 0, 0, 0, 0, 0, 0])])
-    print([round(el, 2) for el in Agent().predict([0, 0, 0, 0, 0, 0, 0, 0, 0])])
-    print([round(el, 2) for el in Agent().predict([0, 0, 0, 0, 0, 0, 0, 0, 0])])
-    print([round(el, 2) for el in Agent().predict([0, 0, 0, 0, 0, 0, 0, 0, 0])])
+    print([round(el, 2) for el in Test.predict([0, 1, 0, -1, -1, 1, 0, -1, 0])])

@@ -1,8 +1,20 @@
+from enum import Enum
+
+
+class Results(Enum):
+    Won_X = "X"
+    Won_0 = "0"
+    Tie = "Tie"
+    Failed_X = "X Failed"
+    Failed_0 = "0 Failed"
+    Ongoing = None
+
+
 class Grid:
     def __init__(self):
         self.grid = [[" ", " ", " "], [" ", " ", " "], [" ", " ", " "]]
         self.turn = "X"
-        self.result = None
+        self.result = Results.Ongoing
         self.Values = [1, -1, 0]  # For X: 1 if X, -1 if 0, 0 if Null, swaped for 0
 
     def change_turn(self):
@@ -20,6 +32,7 @@ class Grid:
             self.grid[position[0]][position[1]] = self.turn
             self.change_turn()
             return True
+        self.result = Results.Failed_X if self.turn == "X" else Results.Failed_0
         return False
 
     def full(self):
@@ -36,14 +49,14 @@ class Grid:
         lines.append([self.grid[i][i] for i in range(3)])
         lines.append([self.grid[i][i] for i in range(3)])
         if ["X", "X", "X"] in lines:
-            self.result = "X"
+            self.result = Results.Won_X
         elif ["0", "0", "0"] in lines:
-            self.result = "0"
+            self.result = Results.Won_0
         elif self.full():
-            self.result = "Tie"
+            self.result = Results.Tie
 
     def done(self):
-        return self.result is not None
+        return self.result is not Results.Ongoing
 
     def GridToRow(self):
         arr = []
@@ -76,14 +89,17 @@ class Grid:
             f" {self.grid[1][0]} | {self.grid[1][1]} | {self.grid[1][2]} \n"
             f"---+---+---\n"
             f" {self.grid[2][0]} | {self.grid[2][1]} | {self.grid[2][2]} \n"
+            f"\n"
+            f"--- {self.result.value} ---\n"
         )
 
 
-grid = Grid()
-print(grid)
-while not grid.done():
-    x, y = map(int, input().split())
-    while not grid.place((x, y)):
-        print("Invalid input, try again: ")
-        x, y = map(int, input().split())
+if __name__ == "__main__":
+    grid = Grid()
     print(grid)
+    while not grid.done():
+        x, y = map(int, input().split())
+        while not grid.place((x, y)):
+            print("Invalid input, try again: ")
+            x, y = map(int, input().split())
+        print(grid)
