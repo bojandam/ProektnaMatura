@@ -10,12 +10,15 @@ input and outputs 9 neurons representing which tile it thinks is best.
 </p>
 <h2>Match.py</h2>
 <p>
-Match.py includes two classes: Match and Tournament. Match represents a "match".<br> It takes two agents and a grid and plays 3(could be changed) games of Tic-Tac-Toe 
-between the agents and calculates their score(Needs little adjusting). It's output is made to work well with the other class, Tournament. <br>
+Match.py includes two classes: Match and Tournament. Match represents a "match".
+</p> 
+<p> It takes two agents and a grid and plays 3(could be changed) games of Tic-Tac-Toe 
+between the agents and calculates their score(Needs little adjusting). It's output is made to work well with the other class, Tournament. </p>
+<p>
 Tournament takes a power-of-two agents and recursevly plays a bracket tournament after which it calculates a ranking list
 </p>
-
-<ul><h2>To Do:</h2>
+<h2>To Do:</h2>
+<ul>
 <li>Fix Tournament output</li>
 <li>Implement reproduction (Mix, Selection, Mutation)</li>
 <li>Do proper testing</li>
