@@ -45,11 +45,11 @@ class Match:
         self.result = tuple(map(sum, zip(self.result, self.play())))
         self.result = tuple(map(sum, zip(self.result, self.play("0"))))
         self.result = tuple(map(sum, zip(self.result, self.play())))
-        return self.result
+        return ((self.result[0], self.player1), (self.result[1], self.player2))
 
 
 if __name__ == "__main__":
     # print(Match().getResult())
-    agents = [(Agent(), Agent()) for i in range(250)]
+    agents = [(Agent(), Agent()) for i in range(16)]
     results = [Match(P1, P2).getResult() for P1, P2 in agents]
-    print(max(results))
+    print(max([(x + y, x, y) for x, y in results]))
