@@ -16,12 +16,16 @@ class Grid:
         self.turn = "X"
         self.result = Results.Ongoing
         self.Values = [1, -1, 0]  # For X: 1 if X, -1 if 0, 0 if Null, swaped for 0
+        self.turnsX = 0
+        self.turnsY = 0
 
     def change_turn(self):
         if self.turn == "X":
             self.turn = "0"
+            self.turnsX += 1
         else:
             self.turn = "X"
+            self.turnsY += 1
 
     def place(self, position):
         if (

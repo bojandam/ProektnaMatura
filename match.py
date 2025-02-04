@@ -10,9 +10,9 @@ class Match:
         self.player2 = player2
         self.grid = grid
         self.resultMap = {
-            Results.Won_X: (1, -1),
-            Results.Won_0: (-1, 1),
-            Results.Tie: (0, 0),
+            Results.Won_X: (2, -2),
+            Results.Won_0: (-2, 2),
+            Results.Tie: (1, 1),
             Results.Failed_X: (-3, 0.5),
             Results.Failed_0: (0.5, -3),
         }
@@ -39,7 +39,12 @@ class Match:
             self.move(self.player1 if self.grid.turn == "X" else self.player2)
             if prt:
                 print(self.grid)
-        return self.resultMap[self.grid.result]
+        tempRez = self.resultMap[self.grid.result]
+        if tempRez == (-3, 0.5):
+            tempRez == (-3, 0.25 * self.grid.turnsY)
+        elif tempRez == (0.5, -3):
+            tempRez == (0.25 * self.grid.turnsX, -3)
+        return tempRez
 
     def getResult(self, prt: bool = False):
         self.result = tuple(map(sum, zip(self.result, self.play("X", prt=prt))))
@@ -56,10 +61,15 @@ class Tournament:
     def rank(self, agents: list = None, prt: bool = False):
         if agents is None:
             agents = self.agents[:]
-        if len(agents) == 1 and agents[0] is not tuple:
+        if len(agents) == 1 and type(agents[0]) != tuple:
             self.ranking.extend(agents)
             return
         results = [Match(P1, P2).getResult(prt=prt) for P1, P2 in agents]
+        if len(agents) == 1:
+            r1, p1, r2, p2 = results[0]
+            self.rank([p1 if r1 > r2 else p2])
+            self.rank([p1 if r1 <= r2 else p2])
+            return
         winers = [
             (p1 if r1 > r2 else p2, p3 if r3 > r4 else p4)
             for (r1, p1, r2, p2, r3, p3, r4, p4) in [
@@ -77,7 +87,7 @@ class Tournament:
 
 
 if __name__ == "__main__":
-    turnament = Tournament(10)
+    turnament = Tournament(13)
     turnament.rank()
     # Match(turnament.ranking[0], turnament.ranking[1]).getResult(prt=True)
-    print((turnament.ranking[0], turnament.ranking[1]))
+    print(Match(turnament.ranking[0], turnament.ranking[1]).getResult(True))
