@@ -19,7 +19,6 @@ Tournament takes a power-of-two agents and recursevly plays a bracket tournament
 </p>
 <h2>To Do:</h2>
 <ul>
-<li>Fix Tournament output</li>
 <li>Implement reproduction (Mix, Selection, Mutation)</li>
 <li>Do proper testing</li>
 </ul>
