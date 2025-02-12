@@ -5,8 +5,6 @@ class Results(Enum):
     Won_X = "X"
     Won_0 = "0"
     Tie = "Tie"
-    Failed_X = "X Failed"
-    Failed_0 = "0 Failed"
     Ongoing = None
 
 
@@ -16,16 +14,16 @@ class Grid:
         self.turn = "X"
         self.result = Results.Ongoing
         self.Values = [1, -1, 0]  # For X: 1 if X, -1 if 0, 0 if Null, swaped for 0
-        self.turnsX = 0
-        self.turnsY = 0
+        # self.turnsX = 0
+        # self.turnsY = 0
 
     def change_turn(self):
         if self.turn == "X":
             self.turn = "0"
-            self.turnsX += 1
+            # self.turnsX += 1
         else:
             self.turn = "X"
-            self.turnsY += 1
+            # self.turnsY += 1
 
     def place(self, position):
         if (
@@ -36,7 +34,6 @@ class Grid:
             self.grid[position[0]][position[1]] = self.turn
             self.change_turn()
             return True
-        self.result = Results.Failed_X if self.turn == "X" else Results.Failed_0
         return False
 
     def full(self):

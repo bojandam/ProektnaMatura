@@ -13,22 +13,35 @@ class Match:
             Results.Won_X: (2, -2),
             Results.Won_0: (-2, 2),
             Results.Tie: (1, 1),
-            Results.Failed_X: (-3, 0.5),
-            Results.Failed_0: (0.5, -3),
         }
+        self.errsP1 = 0
+        self.errsP2 = 0
         self.result = (0, 0)
 
-    def predict_to_point(self, OutputLayer: list):
-        i = OutputLayer.index(max(OutputLayer))
-        return (i // 3, i % 3)
+    # def predict_to_point(self, OutputLayer: list):
+    #     i = OutputLayer.index(max(OutputLayer))
+    #     return (i // 3, i % 3)
 
     def move(self, player: Agent, prt: bool = False):
         InputLayer = self.grid.getX() if self.grid.turn == "X" else self.grid.getY()
-        pos = self.predict_to_point(player.predict(InputLayer=InputLayer))
+        predicted = player.predict(InputLayer=InputLayer)
+
+        i = predicted.index(max(predicted))
+        pos = (i // 3, i % 3)
+
         if prt:
             print(pos)
-        if self.grid.place(pos):  # True if pos is a legal placement
-            self.grid.check()
+        while not self.grid.place(pos):  # True if pos is a legal placement
+            if self.grid.turn == "X":
+                self.errsP1 += 1
+            else:
+                self.errsP2 += 1
+
+            predicted[i] = -1  # It will never get picked again
+
+            i = predicted.index(max(predicted))
+            pos = (i // 3, i % 3)
+        self.grid.check()
 
     def play(self, turn="X", prt: bool = False):
         self.grid.__init__()
@@ -39,11 +52,11 @@ class Match:
             self.move(self.player1 if self.grid.turn == "X" else self.player2)
             if prt:
                 print(self.grid)
-        tempRez = self.resultMap[self.grid.result]
-        if tempRez == (-3, 0.5):
-            tempRez == (-3, 0.25 * self.grid.turnsY)
-        elif tempRez == (0.5, -3):
-            tempRez == (0.25 * self.grid.turnsX, -3)
+        tempRez = (
+            self.resultMap[self.grid.result][0] - self.errsP1,
+            self.resultMap[self.grid.result][1] - self.errsP2,
+        )
+
         return tempRez
 
     def getResult(self, prt: bool = False):
@@ -87,7 +100,7 @@ class Tournament:
 
 
 if __name__ == "__main__":
-    turnament = Tournament(13)
+    turnament = Tournament(12)
     turnament.rank()
     # Match(turnament.ranking[0], turnament.ranking[1]).getResult(prt=True)
     print(Match(turnament.ranking[0], turnament.ranking[1]).getResult(True))
