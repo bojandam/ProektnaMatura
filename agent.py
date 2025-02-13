@@ -1,63 +1,58 @@
 import numpy as np
-from random import random, seed
+from random import random, seed, randint
 from time import time
 
-from sklearn.preprocessing import minmax_scale
+from sklearn.neural_network import MLPClassifier
+
+
+seed(time())
 
 
 class Agent:
     LAYER_SIZES = [9, 16, 8, 9]
+    # LAYER_SIZES = [2, 3, 3, 2]
 
-    def generateGene(self):
-        Len = 0
-        seed(time())
+    def __init__(self):
+        self.mlp = MLPClassifier(hidden_layer_sizes=self.LAYER_SIZES)
+        self.mlp.fit(  # generates random neural network
+            [[0] * self.LAYER_SIZES[0]],
+            [0],  # randint(0, 9)
+        )  # random enough hopefully (random first move)
 
-        for i in range(1, len(self.LAYER_SIZES)):
-            Len += (self.LAYER_SIZES[i - 1] + 1) * self.LAYER_SIZES[i]
-            self.indices[i] = Len
-        self.indices = self.indices[:-1]
+        # for constructing the gene structure again (un-flattening)
+        self.shapes = [
+            arr.shape for arr in self.mlp.coefs_
+        ]  # gets the dimentions of matrix of weights for each two layers (effectively : (lyr_size[i],lyr_size[i+1]))
+        self.chunk_lens = [
+            x * y for x, y in self.shapes
+        ]  # how many elements of the array go in each matrix
+        self.chunk_idexes = [
+            sum(self.chunk_lens[:i]) for i in range(len(self.chunk_lens) + 1)
+        ]  # stores the beginning indices of the abve-mentioned chunks
 
-        self.gene = [random() for i in range(Len)]
-        self.gene = list(minmax_scale(self.gene, (-1, 1)))
-        self.gene = [float(el) for el in self.gene]
+    def construct(self, flat: list):  # opposite of flatten
+        self.mlp.coefs_ = [
+            np.array(flat[self.chunk_idexes[i] : self.chunk_idexes[i + 1]]).reshape(
+                self.shapes[i]
+            )
+            for i in range(len(self.chunk_idexes) - 1)
+        ]
 
-    def __init__(self, gene=None, indices=None):
-        self.indices = [0] * len(self.LAYER_SIZES)
-        if gene:
-            self.gene = gene
-            self.indices = indices
-        else:
-            self.generateGene()
+    def flattened(self):
+        return [x for column in self.mlp.coefs_ for row in column for x in row]
 
-    def activate(self, val: float) -> float:
-        return 1 / (1 + np.exp(-val))
 
-    def predict(self, InputLayer: list):
-        ActiveLayer = InputLayer[:]
-        for i in range(len(self.LAYER_SIZES) - 1):
-            ActiveLayer.append(1)
-            ResultLayer = [0] * self.LAYER_SIZES[i + 1]
-
-            for j in range(self.LAYER_SIZES[i + 1]):
-                for w, k in zip(
-                    self.gene[
-                        self.indices[i] + j * (self.LAYER_SIZES[i] + 1) : self.indices[
-                            i
-                        ]
-                        + (j + 1) * (self.LAYER_SIZES[i] + 1)
-                    ],
-                    range(self.LAYER_SIZES[i] + 1),
-                ):
-                    ResultLayer[j] += w * ActiveLayer[k]
-                ResultLayer[j] = float(self.activate(ResultLayer[j]))
-            ActiveLayer = ResultLayer[:]
-        return ActiveLayer
-
-    def __str__(self):
-        return f"{self.gene} -  {self.indices}  - {len(self.gene)}"
+def flatten3d(arr: list):
+    return [x for column in arr for row in column for x in row]
 
 
 if __name__ == "__main__":
-    Test = Agent()
+    agent = Agent()
+    # print(agent.flattened())
+    agent1 = Agent()
+    # print(agent1.flattened())
     print()
-    print([round(el, 2) for el in Test.predict([0, 1, 0, -1, -1, 1, 0, -1, 0])])
+    print()
+    print(agent1.flattened() == agent.flattened())
+    print(agent.mlp.predict([[0] * 9]))
+    print(agent1.mlp.predict([[0] * 9]))
