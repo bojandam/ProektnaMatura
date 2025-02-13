@@ -37,7 +37,7 @@ class Match:
             else:
                 self.errsP2 += 1
 
-            predicted[i] = -1  # It will never get picked again
+            predicted[i] = min(predicted) - 1  # It will never get picked again
 
             i = predicted.index(max(predicted))
             pos = (i // 3, i % 3)
@@ -66,12 +66,17 @@ class Match:
         return (self.result[0], self.player1, self.result[1], self.player2)
 
 
+calls = 0
+
+
 class Tournament:
     def __init__(self, pow_of_two=4):
         self.agents = [(Agent(), Agent()) for i in range(int(pow(2, pow_of_two)))]
         self.ranking = []
 
     def rank(self, agents: list = None, prt: bool = False):
+        calls += 1
+        print("call", calls, ":", len(agents))
         if agents is None:
             agents = self.agents[:]
         if len(agents) == 1 and type(agents[0]) != tuple:
@@ -102,5 +107,7 @@ class Tournament:
 if __name__ == "__main__":
     turnament = Tournament(12)
     turnament.rank()
+    print()
+    print("ranked")
     # Match(turnament.ranking[0], turnament.ranking[1]).getResult(prt=True)
     print(Match(turnament.ranking[0], turnament.ranking[1]).getResult(True))
