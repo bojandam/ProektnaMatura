@@ -33,6 +33,7 @@ class Grid:
         ):
             self.grid[position[0]][position[1]] = self.turn
             self.change_turn()
+            self.check()
             return True
         return False
 
@@ -44,17 +45,18 @@ class Grid:
         return True
 
     def check(self):
-        lines = [r[:] for r in self.grid]
-        for i in range(3):
-            lines.append([r[i] for r in self.grid])
-        lines.append([self.grid[i][i] for i in range(3)])
-        lines.append([self.grid[i][i] for i in range(3)])
-        if ["X", "X", "X"] in lines:
-            self.result = Results.Won_X
-        elif ["0", "0", "0"] in lines:
-            self.result = Results.Won_0
-        elif self.full():
-            self.result = Results.Tie
+        if not self.done():
+            lines = [r[:] for r in self.grid]
+            for i in range(3):
+                lines.append([r[i] for r in self.grid])
+            lines.append([self.grid[i][i] for i in range(3)])
+            lines.append([self.grid[i][2 - i] for i in range(3)])
+            if ["X", "X", "X"] in lines:
+                self.result = Results.Won_X
+            elif ["0", "0", "0"] in lines:
+                self.result = Results.Won_0
+            elif self.full():
+                self.result = Results.Tie
 
     def done(self):
         return self.result is not Results.Ongoing
@@ -68,18 +70,22 @@ class Grid:
     def getX(self):
         arr = self.GridToRow()
         return [
-            self.Values[0]
-            if X == "X"
-            else (self.Values[1] if X == "0" else self.Values[2])
+            (
+                self.Values[0]
+                if X == "X"
+                else (self.Values[1] if X == "0" else self.Values[2])
+            )
             for X in arr
         ]
 
     def getY(self):
         arr = self.GridToRow()
         return [
-            self.Values[1]
-            if X == "X"
-            else (self.Values[0] if X == "0" else self.Values[2])
+            (
+                self.Values[1]
+                if X == "X"
+                else (self.Values[0] if X == "0" else self.Values[2])
+            )
             for X in arr
         ]
 

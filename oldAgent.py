@@ -7,27 +7,18 @@ from sklearn.preprocessing import minmax_scale
 
 class Agent:
     LAYER_SIZES = [9, 16, 8, 9]
+    indices = []
 
-    def generateGene(self):
+    def __init__(self):
         Len = 0
         seed(time())
+        if Agent.indices == []:
+            Agent.indices = [0] * len(self.LAYER_SIZES)
+            for i in range(1, len(Agent.LAYER_SIZES)):
+                Len += (Agent.LAYER_SIZES[i - 1] + 1) * Agent.LAYER_SIZES[i]
+                Agent.indices[i] = Len
 
-        for i in range(1, len(self.LAYER_SIZES)):
-            Len += (self.LAYER_SIZES[i - 1] + 1) * self.LAYER_SIZES[i]
-            self.indices[i] = Len
-        self.indices = self.indices[:-1]
-
-        self.gene = [random() for i in range(Len)]
-        self.gene = list(minmax_scale(self.gene, (-1, 1)))
-        self.gene = [float(el) for el in self.gene]
-
-    def __init__(self, gene=None, indices=None):
-        self.indices = [0] * len(self.LAYER_SIZES)
-        if gene:
-            self.gene = gene
-            self.indices = indices
-        else:
-            self.generateGene()
+        self.gene = [random() * 2 - 1 for i in range(Agent.indices[-1])]
 
     def activate(self, val: float) -> float:
         return 1 / (1 + np.exp(-val))
@@ -41,9 +32,8 @@ class Agent:
             for j in range(self.LAYER_SIZES[i + 1]):
                 for w, k in zip(
                     self.gene[
-                        self.indices[i] + j * (self.LAYER_SIZES[i] + 1) : self.indices[
-                            i
-                        ]
+                        self.indices[i]
+                        + j * (self.LAYER_SIZES[i] + 1) : self.indices[i]
                         + (j + 1) * (self.LAYER_SIZES[i] + 1)
                     ],
                     range(self.LAYER_SIZES[i] + 1),
@@ -53,11 +43,18 @@ class Agent:
             ActiveLayer = ResultLayer[:]
         return ActiveLayer
 
+    def flattened(self):
+        return self.gene
+
+    def construct(self, flat: list):
+        self.gene = flat
+
     def __str__(self):
         return f"{self.gene} -  {self.indices}  - {len(self.gene)}"
 
 
 if __name__ == "__main__":
     Test = Agent()
+    print(Test)
     print()
     print([round(el, 2) for el in Test.predict([0, 1, 0, -1, -1, 1, 0, -1, 0])])

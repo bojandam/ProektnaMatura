@@ -1,5 +1,6 @@
-from agent import Agent
+from oldAgent import Agent
 from grid import Grid, Results
+from reproducer import reproduce
 
 
 class Match:
@@ -41,17 +42,17 @@ class Match:
 
             i = predicted.index(max(predicted))
             pos = (i // 3, i % 3)
-        self.grid.check()
+        # self.grid.check()
 
     def play(self, turn="X", prt: bool = False):
         self.grid.__init__()
         self.grid.turn = turn
-        if prt:
-            print(self.grid)
+        # if prt:
+        #     print(self.grid)
         while not self.grid.done():
             self.move(self.player1 if self.grid.turn == "X" else self.player2)
-            if prt:
-                print(self.grid)
+        if prt:
+            print(self.grid)
         tempRez = (
             self.resultMap[self.grid.result][0] - self.errsP1,
             self.resultMap[self.grid.result][1] - self.errsP2,
@@ -62,21 +63,22 @@ class Match:
     def getResult(self, prt: bool = False):
         self.result = tuple(map(sum, zip(self.result, self.play("X", prt=prt))))
         self.result = tuple(map(sum, zip(self.result, self.play("0", prt=prt))))
-        self.result = tuple(map(sum, zip(self.result, self.play("X", prt=prt))))
+        # self.result = tuple(map(sum, zip(self.result, self.play("X", prt=prt))))
         return (self.result[0], self.player1, self.result[1], self.player2)
 
 
-calls = 0
-
-
 class Tournament:
-    def __init__(self, pow_of_two=4):
-        self.agents = [(Agent(), Agent()) for i in range(int(pow(2, pow_of_two)))]
+    def __init__(self, pow_of_two_OR_agents=4):
+        if type(pow_of_two_OR_agents) == int:
+            self.agents = [  # pow_of_two_OR_agents is a power of 2
+                (Agent(), Agent()) for i in range(int(pow(2, pow_of_two_OR_agents)))
+            ]
+        else:  # pow_of_two_OR_agents is a list of agents
+            self.agents = pow_of_two_OR_agents
         self.ranking = []
 
     def rank(self, agents: list = None, prt: bool = False):
-        calls += 1
-        print("call", calls, ":", len(agents))
+
         if agents is None:
             agents = self.agents[:]
         if len(agents) == 1 and type(agents[0]) != tuple:
@@ -105,9 +107,27 @@ class Tournament:
 
 
 if __name__ == "__main__":
-    turnament = Tournament(12)
-    turnament.rank()
-    print()
-    print("ranked")
-    # Match(turnament.ranking[0], turnament.ranking[1]).getResult(prt=True)
-    print(Match(turnament.ranking[0], turnament.ranking[1]).getResult(True))
+    n = 10
+    m = int(pow(2, n))
+    turnament = Tournament(n - 1)
+
+    while True:
+        for i in range(50):
+            turnament.rank()
+            print(
+                Match(turnament.ranking[0], turnament.ranking[1]).getResult(
+                    True if i == 49 else False
+                )
+            )
+            turnament = Tournament(
+                reproduce(
+                    turnament.ranking,
+                    Keep=m // 2 + m // 32,
+                    Mixes=m // 16,
+                    Selections=m // 16,
+                    SingleMutations=m // 16,
+                    SlabMutations=m // 32,
+                    RainMutations=m // 16,
+                )
+            )
+        # input("Press to Continue")

@@ -5,9 +5,8 @@ from random import randint, random, seed
 from time import time
 
 
-def Mutate(geneA: list, geneB: list) -> Tuple[list, list]:
+def Mix(geneA: list, geneB: list) -> Tuple[list, list]:
     i = randint(1, len(geneA) - 1)
-    print(i)
     return (geneA[:i] + geneB[i:], geneB[:i] + geneA[i:])
 
 
@@ -41,10 +40,38 @@ def RainMutation(gene):  # multiple mutatuions, up to a sixth of the original ge
     return rez
 
 
-def reproduce(agents: List[Agent]):
-    seed(time(0))
+def reproduce(
+    agents: List[Agent],  # A ranked list (0 best) of agents
+    Keep: int,  # How many of the original to keep
+    Mixes: int,  # How many times to do of each type of action
+    Selections: int,
+    SingleMutations: int,
+    SlabMutations: int,
+    RainMutations: int,
+):
+    seed(time())
     genes = [agent.flattened() for agent in agents]
     Len = len(agents)
+    next_gen_genes = genes[:Keep]
+    for i in range(Mixes):
+        next_gen_genes.extend(Mix(genes[randint(0, Keep)], genes[randint(0, Keep)]))
+    for i in range(Selections):
+        next_gen_genes.extend(
+            Selection(genes[randint(0, Keep)], genes[randint(0, Keep)])
+        )
+    for i in range(SingleMutations):
+        next_gen_genes.append(SingleMutation(genes[randint(0, Keep)]))
+    for i in range(SlabMutations):
+        next_gen_genes.append(SlabMutation(genes[randint(0, Keep)]))
+    for i in range(RainMutations):
+        next_gen_genes.append(RainMutation(genes[randint(0, Keep)]))
+
+    if len(next_gen_genes) > Len:
+        next_gen_genes = next_gen_genes[:Len]
+    next_gen = [Agent() for i in range(Len)]
+    for i in range(len(next_gen_genes)):
+        next_gen[i].construct(next_gen_genes[i])
+    return [(next_gen[i], next_gen[i + 1]) for i in range(0, Len, 2)]
 
 
 if __name__ == "__main__":
