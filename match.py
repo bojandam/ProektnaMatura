@@ -47,12 +47,11 @@ class Match:
     def play(self, turn="X", prt: bool = False):
         self.grid.__init__()
         self.grid.turn = turn
-        # if prt:
-        #     print(self.grid)
+
         while not self.grid.done():
             self.move(self.player1 if self.grid.turn == "X" else self.player2)
-        if prt:
-            print(self.grid)
+            if prt:
+                print(self.grid)
         tempRez = (
             self.resultMap[self.grid.result][0] - self.errsP1,
             self.resultMap[self.grid.result][1] - self.errsP2,
@@ -106,14 +105,25 @@ class Tournament:
         self.rank(losers)
 
 
-if __name__ == "__main__":
-    n = 10
+Data = []
+
+
+def start(n=5):
+    n = 5
     m = int(pow(2, n))
     turnament = Tournament(n - 1)
 
     while True:
         for i in range(50):
             turnament.rank()
+            Data.append(
+                [
+                    Match(turnament.ranking[i], turnament.ranking[i + 1]).getResult(
+                        False
+                    )
+                    for i in range(0, len(turnament.ranking), 2)
+                ]
+            )
             print(
                 Match(turnament.ranking[0], turnament.ranking[1]).getResult(
                     True if i == 49 else False
@@ -130,4 +140,9 @@ if __name__ == "__main__":
                     RainMutations=m // 16,
                 )
             )
-        # input("Press to Continue")
+
+
+if __name__ == "__main__":
+    n = 5
+    start(n)
+    print(Data)
