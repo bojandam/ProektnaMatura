@@ -19,6 +19,12 @@ def plot(Y, degs, colors, name: str):
         model.fit(X, y)
         models.append(model)
         y_pred = model.predict(X)
+        if degree == 1:
+            slope = (y_pred[-1] - y_pred[0]) / (len(y_pred))
+            slope = np.arctan(slope)
+            slope = np.degrees(slope)
+            print("Slope: ", slope)
+            plt.plot([], [], label="Slope: " + str(slope)[:6] + "°")
         plt.plot(
             X, y_pred, linewidth=2, label="degree %d" % degree, color=colors[degree]
         )
