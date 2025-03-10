@@ -9,7 +9,7 @@ from sklearn.pipeline import make_pipeline
 
 
 def plot(Y, degs, colors, name: str):
-    plt.figure(figsize=(20, 3))
+    plt.figure(figsize=(12, 3))
     X = np.array(range(len(Y))).reshape(-1, 1)
     y = Y[:]
     plt.scatter(X, y, label="training points", color=colors["plot"], s=1)
