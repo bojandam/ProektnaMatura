@@ -6,7 +6,8 @@ from sklearn.preprocessing import minmax_scale
 
 
 class Agent:
-    LAYER_SIZES = [9, 16, 8, 9]
+    # LAYER_SIZES = [9, 16, 8, 9]
+    LAYER_SIZES = [9, 8, 4, 9]
     indices = []
 
     def __init__(self):
@@ -19,6 +20,9 @@ class Agent:
                 Agent.indices[i] = Len
 
         self.gene = [random() * 2 - 1 for i in range(Agent.indices[-1])]
+
+        self.Played = 0
+        self.Points = 0
 
     def activate(self, val: float) -> float:
         return 1 / (1 + np.exp(-val))
@@ -47,10 +51,17 @@ class Agent:
         return self.gene
 
     def construct(self, flat: list):
+        if self.gene != flat:
+            self.Played = 0
+            self.Loses = 0
         self.gene = flat
 
     def __str__(self):
         return f"{self.gene} -  {self.indices}  - {len(self.gene)}"
+
+
+def fitness(agent: Agent):
+    return (agent.Points) / (2 * agent.Played)
 
 
 if __name__ == "__main__":

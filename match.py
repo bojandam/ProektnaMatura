@@ -1,4 +1,4 @@
-from oldAgent import Agent
+from oldAgent import Agent, fitness
 from grid import Grid, Results
 from reproducer import reproduce
 from functools import cmp_to_key
@@ -53,6 +53,14 @@ class Match:
             self.move(self.player1 if self.grid.turn == "X" else self.player2)
             if prt:
                 print(self.grid)
+
+        self.player1.Played += 1
+        self.player2.Played += 1
+        self.player1.Points += self.resultMap[self.grid.result][0] - self.errsP1
+        self.player2.Points += self.resultMap[self.grid.result][1] - self.errsP2
+
+        self.player1.Played += 1
+        self.player2.Played += 1
         tempRez = (
             self.resultMap[self.grid.result][0] - self.errsP1,
             self.resultMap[self.grid.result][1] - self.errsP2,
@@ -67,8 +75,10 @@ class Match:
         return (self.result[0], self.player1, self.result[1], self.player2)
 
 
-def compare(L, R):
-    l, p1, r, p2 = Match(L, R).getResult()
+def compare(L: Agent, R: Agent):
+
+    pom = Match(L, R).getResult()
+    l, p1, r, p2 = pom
     if l > r:
         return -1
     elif l == r:
