@@ -70,11 +70,11 @@ class Match:
 def compare(L, R):
     l, p1, r, p2 = Match(L, R).getResult()
     if l > r:
-        return 1
+        return -1
     elif l == r:
         return 0
     else:
-        return -1
+        return 1
 
 
 class Tournament:
