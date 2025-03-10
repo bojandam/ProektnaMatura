@@ -1,6 +1,7 @@
 from oldAgent import Agent
 from grid import Grid, Results
 from reproducer import reproduce
+from functools import cmp_to_key
 
 
 class Match:
@@ -66,6 +67,16 @@ class Match:
         return (self.result[0], self.player1, self.result[1], self.player2)
 
 
+def compare(L, R):
+    l, p1, r, p2 = Match(L, R).getResult()
+    if l > r:
+        return 1
+    elif l == r:
+        return 0
+    else:
+        return -1
+
+
 class Tournament:
     def __init__(self, pow_of_two_OR_agents=4):
         if type(pow_of_two_OR_agents) == int:
@@ -76,8 +87,12 @@ class Tournament:
             self.agents = pow_of_two_OR_agents
         self.ranking = []
 
-    def rank(self, agents: list = None, prt: bool = False):
+    def rank(self):
+        self.ranking = sorted(
+            [x for y in self.agents for x in y], key=cmp_to_key(compare)
+        )
 
+    def rankOld(self, agents: list = None, prt: bool = False):
         if agents is None:
             agents = self.agents[:]
         if len(agents) == 1 and type(agents[0]) != tuple:
