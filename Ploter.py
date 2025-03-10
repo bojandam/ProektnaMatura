@@ -12,7 +12,7 @@ def plot(Y, degs, colors, name: str):
     plt.figure(figsize=(20, 3))
     X = np.array(range(len(Y))).reshape(-1, 1)
     y = Y[:]
-    plt.plot(X, y, label="training points", color=colors["plot"])
+    plt.scatter(X, y, label="training points", color=colors["plot"], s=1)
     models = []
     for degree in degs:
         model = make_pipeline(PolynomialFeatures(degree), Ridge(alpha=0.1e-3))
