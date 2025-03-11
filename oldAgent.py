@@ -61,7 +61,7 @@ class Agent:
 
 
 def fitness(agent: Agent):
-    return (agent.Points) / (2 * agent.Played)
+    return ((agent.Points / agent.Played) + 20) / 22
 
 
 if __name__ == "__main__":

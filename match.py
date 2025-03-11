@@ -111,8 +111,8 @@ class Tournament:
         results = [Match(P1, P2).getResult(prt=prt) for P1, P2 in agents]
         if len(agents) == 1:
             r1, p1, r2, p2 = results[0]
-            self.rank([p1 if r1 > r2 else p2])
-            self.rank([p1 if r1 <= r2 else p2])
+            self.rankOld([p1 if r1 > r2 else p2])
+            self.rankOld([p1 if r1 <= r2 else p2])
             return
         winers = [
             (p1 if r1 > r2 else p2, p3 if r3 > r4 else p4)
@@ -126,8 +126,8 @@ class Tournament:
                 results[i] + results[i + 1] for i in range(0, len(results), 2)
             ]
         ]
-        self.rank(winers)
-        self.rank(losers)
+        self.rankOld(winers)
+        self.rankOld(losers)
 
 
 Data = []
