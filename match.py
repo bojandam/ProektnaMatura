@@ -95,7 +95,7 @@ class Tournament:
             ]
         else:  # pow_of_two_OR_agents is a list of agents
             self.agents = pow_of_two_OR_agents
-        self.ranking = []
+        self.ranking: list[Agent] = []
 
     def rank(self):
         self.ranking = sorted(
