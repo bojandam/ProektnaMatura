@@ -1,24 +1,24 @@
-<h2>Grid.py</h2>
-<p>
-<tb>Grid.py contains a class(Grid) that represents an interactable Tic-Tac-Toe grid with keeps track of the turn, gamestate, and winner,
-and has methods to transcribe the grid into input for the neural network.  
-</p>
-<h2>Agent.py</h2>
-<p>
-Agent.py has a class(Agent) that contains a gene, which can be randomly generated. The Gene contains weights for a neural network that takes the grid values as 
-input and outputs 9 neurons representing which tile it thinks is best. 
-</p>
-<h2>Match.py</h2>
-<p>
-Match.py includes two classes: Match and Tournament. Match represents a "match".
-</p> 
-<p> It takes two agents and a grid and plays 3(could be changed) games of Tic-Tac-Toe 
-between the agents and calculates their score(Needs little adjusting). It's output is made to work well with the other class, Tournament. </p>
-<p>
-Tournament takes a power-of-two agents and recursevly plays a bracket tournament after which it calculates a ranking list
-</p>
-<h2>To Do:</h2>
-<ul>
-<li>Implement reproduction (Mix, Selection, Mutation)</li>
-<li>Do proper testing</li>
-</ul>
+# My High School Graduation Project: Concept for a Tournament-based Neuroevolution algorithm via Tic-Tac-Toe
+
+This is my High School Graduation project (мк: Проектна за матура). I was mentored by Martin Dinev, who was my professor for the subjct "Intelegent Systems" at my high shool.
+
+I made this project because I wanted to explore if you can train AI agents by making them play against each-other, instead of a classical fitness function, which would be usefull for games that aren't solved (an optimal solution isn't known). Natrually, the easiest option was a two player game that plays mostly simetrically and Tic-Tac-Toe came to mind. Additionally it is short and simple so it's good for testing the concept.
+
+The project includes implementation in Python as well as a few Experiments to determine if it works, and what parameters produce the best results.
+
+## Algorithn outline
+### The "Evolution" aspect
+The algorithm roughly works like this:
+1. A generation of agents is initialised
+2. The agents are sorted where '<' means A got fewer points than B. Points are gained by winning, and lost by losing and attempting illegal moves. The sorting was done in two seperate ways:
+  -The default, correct sorting algoirithm in python
+  -An "aproximation" soring algorithm, which resembles a bracket that isn't complete. This was done to introduce some fuzzyness into the selection process.
+3. The top agents are seleted, crossovered and mutated, and placed in the next generation, as well as some newly generated ones.
+4. Repeat untill happy
+
+### The "Neuro" aspect
+Each agent is a neural network with two secret layers. The input layer are 9 neurons all representing if their cell is empty, has their symbol, or has the opponent's symbol. The output layer represents how "sure" it is that cell should be slected. The highest ranked legal move is chosen (the agent is penalised if it attempts an illegal move).
+
+### The "Neuroevolution" aspect
+The weights of the neural network are represented in the genome. Their value is the thing that gets mutated, crossovered, and so on.
+
