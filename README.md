@@ -27,4 +27,4 @@ A few experements revealed that the best paramaters to the algorithm are:
   - 80% of the population gets selected
   - Ranked via the fuzzy sorting method ([implementation](https://github.com/bojandam/ProektnaMatura/blob/d481214d7a53c62a4e49c35b24925c3842943ff5/match.py#L105))
 Since the fuzzy sorting method produced results that we deem "good enough" we consider the experement successful.
-
+[Experiment details in Macedonian](https://github.com/bojandam/ProektnaMatura/blob/99b5db85b3f397145276df4d10b87c6d7afb6f75/Shortened%20version%20of%20experiments.pdf)
