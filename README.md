@@ -6,8 +6,8 @@ I made this project because I wanted to explore if you can train AI agents by ma
 
 The project includes implementation in Python as well as a few Experiments to determine if it works, and what parameters produce the best results.
 
-## Algorithn outline
-### The "Evolution" aspect
+# Algorithn outline
+## The "Evolution" aspect
 The algorithm roughly works like this:
 1. A generation of agents is initialised
 2. The agents are sorted where '<' means A got fewer points than B. Points are gained by winning, and lost by losing and attempting illegal moves. The sorting was done in two seperate ways:
@@ -16,9 +16,15 @@ The algorithm roughly works like this:
 3. The top agents are seleted, crossovered and mutated, and placed in the next generation, as well as some newly generated ones.
 4. Repeat untill happy
 
-### The "Neuro" aspect
+## The "Neuro" aspect
 Each agent is a neural network with two secret layers. The input layer are 9 neurons all representing if their cell is empty, has their symbol, or has the opponent's symbol. The output layer represents how "sure" it is that cell should be slected. The highest ranked legal move is chosen (the agent is penalised if it attempts an illegal move).
 
-### The "Neuroevolution" aspect
+## The "Neuroevolution" aspect
 The weights of the neural network are represented in the genome. Their value is the thing that gets mutated, crossovered, and so on.
+
+# Experiments and their results
+A few experements revealed that the best paramaters to the algorithm are:
+  - 80% of the population gets selected
+  - Ranked via the fuzzy sorting method ([implementation](https://github.com/bojandam/ProektnaMatura/blob/d481214d7a53c62a4e49c35b24925c3842943ff5/match.py#L105))
+Since the fuzzy sorting method produced results that we deem "good enough" we consider the experement successful.
 
